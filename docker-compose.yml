@@ -1,0 +1,25 @@
+data:
+ build: jenkins_data
+
+master:
+  build: jenkins_master
+  volumes:
+    - .:/backup
+  volumes_from:
+    - data
+  ports:
+    - "50000:50000"
+    - "${HTTP_PORT}:8080" # Need to make this configurable, as we'll want 80:80 in 'prod' environments
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/local/bin/docker:/usr/bin/docker
+  tty: true
+
+#nginx:
+#  build: jenkins_nginx
+#  ports:
+#     - "${HTTP_PORT}:80" # Need to make this configurable, as we'll want 80:80 in 'prod' environments
+#  links:
+#     - master:jenkins_master
+#/var/run/docker.sock:/var/run/docker.sock
+
