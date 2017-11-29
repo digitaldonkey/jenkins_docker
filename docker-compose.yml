@@ -3,6 +3,7 @@ data:
 
 master:
   build: jenkins_master
+  restart: always
   volumes:
     - .:/backup
   volumes_from:
@@ -12,7 +13,6 @@ master:
     - "${HTTP_PORT}:8080" # Need to make this configurable, as we'll want 80:80 in 'prod' environments
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - /usr/local/bin/docker:/usr/bin/docker
   tty: true
 
 #nginx:

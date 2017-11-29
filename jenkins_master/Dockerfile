@@ -6,7 +6,14 @@ RUN mkdir /var/log/jenkins
 RUN mkdir /var/cache/jenkins
 RUN chown -R  jenkins:jenkins /var/log/jenkins
 RUN chown -R  jenkins:jenkins /var/cache/jenkins
-RUN usermod -a -G users jenkins
+
+# Install Docker client
+# 999 should be the gid on /var/run/docker.sock
+RUN groupadd docker --gid 999
+RUN usermod -a -G docker jenkins
+
+# Install docker binaries
+RUN curl https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz | tar xvz -C /tmp && mv /tmp/docker/docker* /usr/bin
 
 USER jenkins
 ENV JAVA_OPTS="-Xmx4096m"
@@ -19,9 +26,7 @@ COPY conf/plugins.txt /usr/share/jenkins/plugins.txt
 # RUN /usr/local/bin/plugins.sh /var/jenkins_home/plugins.txt
 RUN /usr/local/bin/install-plugins.sh $(cat /usr/share/jenkins/plugins.txt | tr '\n' ' ')
 
-
-
-# plugins.sh is depreciated I should use install-plugins.sh
+# TODO: plugins.sh is depreciated I should use install-plugins.sh
 
 # "For 2.x-derived images, you may also want to" - we're 2.0 dervied, so we want this
 RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
@@ -29,3 +34,4 @@ RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
 # Put the log file into the log directory, which will be in the data volume
 # Move the WAR out of the persisted jenkins data dir
 ENV JENKINS_OPTS="--logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war"
+
