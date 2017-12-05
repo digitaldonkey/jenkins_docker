@@ -1,25 +1,39 @@
-data:
- build: jenkins_data
-
-master:
+jk_master:
   build: jenkins_master
   restart: always
   volumes:
-    - .:/backup
+    - ./backup:/backup
   volumes_from:
-    - data
+    - jk_data
+    - api_docs_data:rw
   ports:
     - "50000:50000"
-    - "${HTTP_PORT}:8080" # Need to make this configurable, as we'll want 80:80 in 'prod' environments
+  # - "8080:8080"
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   tty: true
 
-#nginx:
-#  build: jenkins_nginx
-#  ports:
-#     - "${HTTP_PORT}:80" # Need to make this configurable, as we'll want 80:80 in 'prod' environments
-#  links:
-#     - master:jenkins_master
-#/var/run/docker.sock:/var/run/docker.sock
+jk_data:
+ build: jenkins_data
 
+jk_nginx:
+ build: jenkins_nginx
+ # Requires a .env file containing at least the line: JENKINS_PORT=8444.
+ ports:
+    - "${JENKINS_PORT}:80"
+ links:
+    - jk_master:jenkins_master
+
+api_docs:
+  build: api_docs
+  restart: always
+  # Requires a .env file containing at least the line: API_PORT=8444.
+  ports:
+    - "${API_PORT}:80"
+#  volumes:
+#    - ./api_docs_root:/usr/share/nginx/html:ro
+  volumes_from:
+    - api_docs_data:ro
+
+api_docs_data:
+ build: api_docs_data
