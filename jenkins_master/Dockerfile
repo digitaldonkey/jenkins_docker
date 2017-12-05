@@ -32,3 +32,6 @@ RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
 # Move the WAR out of the persisted jenkins data dir
 ENV JENKINS_OPTS="--logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war"
 
+# USER root
+# COPY ./entrypoint.sh /usr/local/sbin/
+# ENTRYPOINT ["entrypoint.sh"]
