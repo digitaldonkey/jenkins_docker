@@ -1,7 +1,8 @@
 FROM jrelva/nginx-autoindex
 
-  # https://hub.docker.com/r/jrelva/nginx-autoindex/
-  # image: jrelva/nginx-autoindex
+# FROM nginx
+# https://hub.docker.com/r/jrelva/nginx-autoindex/
+# image: jrelva/nginx-autoindex
 
 COPY ./conf/nginx.conf /etc/nginx/conf.d/default.conf
 
