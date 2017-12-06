@@ -13,9 +13,8 @@ jk_master:
     - /var/run/docker.sock:/var/run/docker.sock
   tty: true
   environment:
-    - VIRTUAL_HOST=whoami.local
+    - VIRTUAL_HOST=${VIRTUAL_HOST}
     - VIRTUAL_PORT=${JENKINS_PORT}
-
 
 jk_data:
  build: jenkins_data
