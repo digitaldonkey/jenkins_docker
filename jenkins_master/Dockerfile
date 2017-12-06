@@ -15,10 +15,17 @@ RUN usermod -a -G docker jenkins
 # Install docker binaries
 RUN curl https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz | tar xvz -C /tmp && mv /tmp/docker/docker* /usr/bin
 
+# Install doxygen
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    doxygen graphviz \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install Jenkins
 USER jenkins
 ENV JAVA_OPTS="-Xmx4096m"
 
-# install plugins; the plugins.txt file can be exported from Jenkins like this:
+# Install plugins; the plugins.txt file can be exported from Jenkins like this:
 # JENKINS_HOST=username:password@myhost.com:port
 # curl -sSL "http://$JENKINS_HOST/pluginManager/api/xml?depth=1&xpath=/*/*/shortName|/*/*/version&wrapper=plugins" | perl -pe 's/.*?<shortName>([\w-]+).*?<version>([^<]+)()(<\/\w+>)+/\1 \2\n/g'|sed 's/ /:/' > jenkins_master/conf/plugins.txt
 
@@ -32,6 +39,14 @@ RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
 # Move the WAR out of the persisted jenkins data dir
 ENV JENKINS_OPTS="--logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war"
 
+
+# TODO: Fix permissions on /var/run/docker.sock
+# In most cases the current fixed gid=999 for docker group works.
+#
+# This crashed jenkins_nginx for unknown reasons.
+# you might need to do something like:
+# docker exec -it  -u root jenkinsdocker_jk_master_1 bash -c "chown root:docker /var/run/docker.sock"
+# If "docker pull library/composer" fails in build pipeline.
 # USER root
 # COPY ./entrypoint.sh /usr/local/sbin/
 # ENTRYPOINT ["entrypoint.sh"]
