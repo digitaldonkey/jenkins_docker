@@ -18,7 +18,7 @@ fi
 mkdir -p "$DOCDIR"
 
 # Prepare template, that SSI of branch-navi works everywhere.
-sed -i "s/<!--#include virtual=\"navi.html\" -->/<!--#include virtual=\"\/$BRANCHNAME\/navi.html\" -->/g" "$WORKSPACE/resources/doxygen-assets/header.html"
+sed -i "s/<!--#include virtual=\"navi.html\" -->/<!--#include virtual=\"\/$BRANCHNAME\/navi.html\" -->/g" "$WORKSPACE/doxygen-assets/header.html"
 
 echo "### DOXYGEN CONFIG ###"
 (cat "$WORKSPACE/Doxyfile" ; echo "OUTPUT_DIRECTORY = \"$(printf %q "$DOCDIR")\"")|cat

@@ -40,9 +40,11 @@ RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
 ENV JENKINS_OPTS="--logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war"
 
 USER root
+# Copy scripts for Doxygen doc generation.
 COPY ./bin/makeApiNav.sh ./bin/runDoxygen.sh /usr/local/bin/
 RUN chown -R  root:jenkins /usr/local/bin/makeApiNav.sh && chmod 750 /usr/local/bin/makeApiNav.sh
 RUN chown -R  root:jenkins /usr/local/bin/runDoxygen.sh && chmod 750 /usr/local/bin/runDoxygen.sh
+
 USER jenkins
 
 # TODO: Fix permissions on /var/run/docker.sock
