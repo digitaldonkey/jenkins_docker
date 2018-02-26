@@ -30,7 +30,9 @@ ENV JAVA_OPTS="-Xmx4096m"
 # curl -sSL "http://$JENKINS_HOST/pluginManager/api/xml?depth=1&xpath=/*/*/shortName|/*/*/version&wrapper=plugins" | perl -pe 's/.*?<shortName>([\w-]+).*?<version>([^<]+)()(<\/\w+>)+/\1 \2\n/g'|sed 's/ /:/' > jenkins_master/conf/plugins.txt
 
 COPY conf/plugins.txt /usr/share/jenkins/plugins.txt
-RUN /usr/local/bin/install-plugins.sh $(cat /usr/share/jenkins/plugins.txt | tr '\n' ' ')
+# RUN /usr/local/bin/install-plugins.sh $(cat /usr/share/jenkins/plugins.txt | tr '\n' ' ')
+RUN xargs /usr/local/bin/install-plugins.sh < /usr/share/jenkins/plugins.txt
+
 
 # "For 2.x-derived images, you may also want to" - we're 2.0 dervied, so we want this
 RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
