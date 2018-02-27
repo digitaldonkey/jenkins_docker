@@ -5,6 +5,9 @@ FROM jrelva/nginx-autoindex
 # image: jrelva/nginx-autoindex
 
 COPY ./conf/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./entrypoint.sh /usr/local/sbin/
+
+ENTRYPOINT ["entrypoint.sh"]
 
 # docker build -t ethereum-php-doc --no-cache .
 # docker run --name ethereum-php-doc-ngnix -p 8080:80  ethereum-php-doc
