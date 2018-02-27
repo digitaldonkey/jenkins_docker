@@ -47,15 +47,14 @@ COPY ./bin/makeApiNav.sh ./bin/runDoxygen.sh /usr/local/bin/
 RUN chown -R  root:jenkins /usr/local/bin/makeApiNav.sh && chmod 750 /usr/local/bin/makeApiNav.sh
 RUN chown -R  root:jenkins /usr/local/bin/runDoxygen.sh && chmod 750 /usr/local/bin/runDoxygen.sh
 
-USER jenkins
-
-# TODO: Fix permissions on /var/run/docker.sock
+# Fix permissions on /var/run/docker.sock
 # In most cases the current fixed gid=999 for docker group works.
 #
 # This crashed jenkins_nginx for unknown reasons.
 # you might need to do something like:
 # docker exec -it  -u root jenkinsdocker_jk_master_1 bash -c "chown root:docker /var/run/docker.sock"
 # If "docker pull library/composer" fails in build pipeline.
-# USER root
-# COPY ./entrypoint.sh /usr/local/sbin/
+USER root
+COPY ./entrypoint.sh /usr/local/sbin/
 # ENTRYPOINT ["entrypoint.sh"]
+

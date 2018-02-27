@@ -14,7 +14,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - jk_data:/var/jenkins_home
-      - jk_data:/apidata
+      - api_docs_data:/apidocs
     tty: true
     expose:
       - "50000"
@@ -22,7 +22,6 @@ services:
 
   jk_nginx:
     build: jenkins_nginx
-    # Requires a .env file containing at least the line: JENKINS_PORT=8444.
     # HOST:CONTAINER
     ports:
       - "8080:${JENKINS_PORT}"
@@ -50,12 +49,12 @@ services:
     restart: always
     # Requires a .env file containing at least the line: API_PORT=8444.
     ports:
-      - "${API_PORT}:80"
+     - "${API_PORT}:80"
     volumes:
-      - api_docs_data:/apidocs
+     - api_docs_data:/apidocs:ro
     environment:
-      - API_HOST=${API_HOST}
-      - API_PORT=${API_PORT}
+     - API_HOST=${API_HOST}
+     - API_PORT=${API_PORT}
 
   jk_data:
      build: jenkins_data
